@@ -100,3 +100,111 @@ filterwarnings = [
 [tool.coverage.run]
 source = ["src"]
 omit = ["tests/*", "alembic/*"]
+
+# Ruff runs on every pull request (lint job in .github/workflows/pipeline.yml, version
+# pinned there). The rules are listed on purpose: Ruff's default set changes between versions.
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F"]
+
+# Known debt, measured on develop on 2026-11-12 with Ruff 0.17.4. A file listed here may
+# keep breaking the rules next to it; a new file, or a new rule in a listed file, fails the CI.
+# Owner: Danilo, reviewed at every release cut. Shrink it, never grow it: fix the file and
+# drop its rules. Regenerate only to shrink, with models/python/ruff-baseline.py from the
+# shared workflows repository.
+# Two entries hide real bugs (F821), listed only until they are fixed:
+#   src/services/adk/mcp_context.py - StdioServerParameters is never imported
+#   src/services/adk/agents/llm_agent_builder.py - {_system_data} inside an f-string
+[tool.ruff.lint.per-file-ignores]
+# Baseline: 334 issues in 92 files. Do not add entries by hand.
+"migrations/env.py" = ["F401"]  # F401 x1
+"scripts/run_seeders.py" = ["E402"]  # E402 x5
+"src/api/a2a_routes.py" = ["E402", "E722", "F541"]  # E402 x27, E722 x1, F541 x15
+"src/api/asana_routes.py" = ["F401"]  # F401 x2
+"src/api/atlassian_routes.py" = ["F401"]  # F401 x2
+"src/api/canva_routes.py" = ["F401"]  # F401 x2
+"src/api/chat_routes.py" = ["E402", "E722", "F541"]  # E402 x8, E722 x8, F541 x7
+"src/api/client_routes.py" = ["F401"]  # F401 x2
+"src/api/custom_mcp_servers_routes.py" = ["F401"]  # F401 x1
+"src/api/github_routes.py" = ["F401"]  # F401 x2
+"src/api/google_calendar_routes.py" = ["F811"]  # F811 x3
+"src/api/google_sheets_routes.py" = ["F811"]  # F811 x1
+"src/api/hubspot_routes.py" = ["F401"]  # F401 x2
+"src/api/integrations_routes.py" = ["F401"]  # F401 x1
+"src/api/linear_routes.py" = ["F401"]  # F401 x2
+"src/api/mcp_integration_base.py" = ["F401"]  # F401 x1
+"src/api/monday_routes.py" = ["F401"]  # F401 x2
+"src/api/notion_routes.py" = ["F401"]  # F401 x2
+"src/api/paypal_routes.py" = ["F401"]  # F401 x2
+"src/api/session_routes.py" = ["F401", "F541", "F811"]  # F401 x1, F541 x3, F811 x2
+"src/api/supabase_routes.py" = ["F401"]  # F401 x2
+"src/api/tools_routes.py" = ["F401"]  # F401 x1
+"src/config/redis.py" = ["E402"]  # E402 x4
+"src/config/settings.py" = ["F401"]  # F401 x1
+"src/main.py" = ["E402"]  # E402 x20
+"src/schemas/a2a_enhanced_types.py" = ["F401"]  # F401 x5
+"src/schemas/a2a_types.py" = ["F401"]  # F401 x4
+"src/schemas/chat.py" = ["F401"]  # F401 x2
+"src/schemas/response_models.py" = ["F401"]  # F401 x8
+"src/services/adk/agents/a2a_agent.py" = ["F401"]  # F401 x3
+"src/services/adk/agents/a2a_agent_builder.py" = ["F401"]  # F401 x1
+"src/services/adk/agents/llm_agent_builder.py" = ["E722", "F401", "F541", "F821"]  # E722 x1, F401 x1, F541 x2, F821 x1
+"src/services/adk/agents/task_agent.py" = ["F401"]  # F401 x1
+"src/services/adk/agents/workflow_agent.py" = ["F841"]  # F841 x2
+"src/services/adk/agents/workflow_agent_builder.py" = ["F401"]  # F401 x1
+"src/services/adk/artifacts/providers/base_provider.py" = ["F401"]  # F401 x1
+"src/services/adk/artifacts/providers/in_memory_provider.py" = ["F401"]  # F401 x2
+"src/services/adk/artifacts/providers/minio_provider.py" = ["F401"]  # F401 x2
+"src/services/adk/artifacts/providers/registry.py" = ["F401"]  # F401 x1
+"src/services/adk/lazy_mcp_tool.py" = ["F401"]  # F401 x2
+"src/services/adk/mcp_cache.py" = ["F401", "F541"]  # F401 x1, F541 x2
+"src/services/adk/mcp_context.py" = ["F401", "F821", "F841"]  # F401 x1, F821 x1, F841 x1
+"src/services/adk/mcp_servers/asana/config.py" = ["F541"]  # F541 x1
+"src/services/adk/mcp_servers/canva/config.py" = ["F541"]  # F541 x1
+"src/services/adk/mcp_servers/github/config.py" = ["F401", "F541"]  # F401 x1, F541 x4
+"src/services/adk/mcp_servers/hubspot/config.py" = ["F541"]  # F541 x2
+"src/services/adk/mcp_servers/linear/config.py" = ["F401", "F541"]  # F401 x1, F541 x4
+"src/services/adk/mcp_servers/monday/config.py" = ["F541"]  # F541 x1
+"src/services/adk/mcp_servers/notion/config.py" = ["F401", "F541"]  # F401 x1, F541 x4
+"src/services/adk/mcp_servers/paypal/config.py" = ["F541"]  # F541 x1
+"src/services/adk/mcp_servers/supabase/config.py" = ["F541"]  # F541 x1
+"src/services/adk/mcp_service.py" = ["F401", "F541"]  # F401 x5, F541 x11
+"src/services/adk/memory/memory_retention_mixin.py" = ["F401"]  # F401 x1
+"src/services/adk/runners/live_runner.py" = ["F401"]  # F401 x1
+"src/services/adk/runners/runner_utils.py" = ["F401"]  # F401 x4
+"src/services/adk/runners/standard_runner.py" = ["F841"]  # F841 x2
+"src/services/adk/runners/streaming_runner.py" = ["F841"]  # F841 x2
+"src/services/adk/tool_builder.py" = ["F541"]  # F541 x6
+"src/services/adk/tools/compress_memory_tool.py" = ["F401"]  # F401 x1
+"src/services/adk/tools/evo_crm/pipeline_manipulation.py" = ["F541"]  # F541 x10
+"src/services/adk/tools/evo_crm/update_contact.py" = ["F401", "F541"]  # F401 x1, F541 x5
+"src/services/adk/tools/google_calendar/base.py" = ["F401"]  # F401 x1
+"src/services/adk/tools/google_calendar/cancel_event.py" = ["F401"]  # F401 x1
+"src/services/adk/tools/google_calendar/create_event.py" = ["F541"]  # F541 x1
+"src/services/adk/tools/google_sheets/base.py" = ["F401"]  # F401 x1
+"src/services/adk/tools/google_sheets/create_spreadsheet.py" = ["F541"]  # F541 x1
+"src/services/adk/tools/google_sheets/read_spreadsheet.py" = ["F541"]  # F541 x1
+"src/services/adk/tools/preload_memory_tool.py" = ["F401"]  # F401 x1
+"src/services/adk/tools/text_to_speech.py" = ["E722", "F541"]  # E722 x1, F541 x1
+"src/services/agent_service.py" = ["E712"]  # E712 x1
+"src/services/evo_auth_service.py" = ["F541"]  # F541 x2
+"src/services/folder_share_service.py" = ["E712"]  # E712 x1
+"src/services/google_calendar_service.py" = ["F401"]  # F401 x2
+"src/services/google_sheets_service.py" = ["F401"]  # F401 x2
+"src/services/mcp_oauth_service.py" = ["F541"]  # F541 x9
+"src/services/mcp_server_service.py" = ["F811"]  # F811 x1
+"src/services/memory_service.py" = ["F541", "F841"]  # F541 x3, F841 x1
+"src/services/otel_config.py" = ["F401", "F841"]  # F401 x2, F841 x1
+"src/services/paypal_service.py" = ["F541", "F841"]  # F541 x3, F841 x1
+"src/services/permission_service.py" = ["F541"]  # F541 x1
+"src/services/service_providers.py" = ["E402", "F401"]  # E402 x3, F401 x1
+"src/services/session_service.py" = ["F401", "F541"]  # F401 x1, F541 x1
+"src/services/temp_limits_service.py" = ["F401"]  # F401 x2
+"src/services/tools_service.py" = ["F401"]  # F401 x1
+"src/utils/a2a_enhanced_client.py" = ["E402", "F401"]  # E402 x10, F401 x16
+"src/utils/contextutils.py" = ["F401"]  # F401 x1
+"src/utils/http.py" = ["E722", "F401"]  # E722 x1, F401 x2
+"src/utils/response.py" = ["F401"]  # F401 x1
+"tests/unit/test_exception_handlers.py" = ["F401"]  # F401 x2
+"tests/unit/test_json_encoder.py" = ["F401"]  # F401 x1
+"tests/unit/test_media_file_parts.py" = ["F841"]  # F841 x1
+"tests/unit/test_test_panel_cross_user_isolation.py" = ["F401"]  # F401 x1
