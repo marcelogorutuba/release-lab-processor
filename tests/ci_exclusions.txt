@@ -13,3 +13,4 @@
 tests/unit/test_exception_handlers.py | Danilo | ImportError at collection: generic_exception_handler, the 500 handler that kept internal class names out of the body, was removed from src/core/exception_handlers.py
 tests/integration/test_response_pipeline.py::TestA2AMessageSendErrorEnvelope::test_exception_branch_returns_jsonrpc_envelope | Danilo | KeyError 'jsonrpc': handle_message_send answers an agent failure with the standard envelope, not the top-level JSON-RPC error the bot-runtime reads
 tests/integration/test_response_pipeline.py::TestA2AMessageSendErrorEnvelope::test_missing_message_returns_jsonrpc_envelope | Danilo | KeyError 'jsonrpc': handle_message_send answers a request without a message with the standard envelope, not the top-level JSON-RPC error the bot-runtime reads
+tests/integration/test_response_pipeline.py::TestA2AMessageSendErrorEnvelope::test_gone | Danilo | the test does not exist
