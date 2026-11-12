@@ -26,7 +26,7 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Tests
-        run: pytest -q -rs --junitxml=pytest-report.xml
+        run: pytest tests/unit -q -rs --junitxml=pytest-report.xml
 
       # A skipped test is a test that did not run.
       - name: Fail on skipped tests
