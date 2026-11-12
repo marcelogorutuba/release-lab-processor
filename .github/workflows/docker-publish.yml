@@ -10,13 +10,14 @@ on:
 
 permissions:
   contents: read
+  packages: write # LAB: GHCR
 
 concurrency:
   group: docker-publish-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 env:
-  IMAGE_NAME: evoapicloud/evo-ai-processor-community
+  IMAGE_NAME: ghcr.io/marcelogorutuba/release-lab-processor # LAB
 
 jobs:
   build-pr:
@@ -34,8 +35,9 @@ jobs:
 
       - uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3.4.0
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          registry: ghcr.io # LAB
+          username: ${{ github.actor }} # LAB
+          password: ${{ secrets.GITHUB_TOKEN }} # LAB
 
       - name: Resolve PR tags
         id: tags
@@ -55,6 +57,7 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: ${{ steps.tags.outputs.tags }}
+          labels: org.opencontainers.image.source=https://github.com/${{ github.repository }} # LAB: public package
           cache-from: type=gha,scope=linux/amd64
           cache-to: type=gha,scope=linux/amd64,mode=max
 
@@ -77,8 +80,9 @@ jobs:
 
       - uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3.4.0
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          registry: ghcr.io # LAB
+          username: ${{ github.actor }} # LAB
+          password: ${{ secrets.GITHUB_TOKEN }} # LAB
 
       - name: Build and push by digest
         id: build
@@ -91,6 +95,7 @@ jobs:
           provenance: mode=max
           sbom: true
           outputs: type=image,name=${{ env.IMAGE_NAME }},push-by-digest=true,name-canonical=true
+          labels: org.opencontainers.image.source=https://github.com/${{ github.repository }} # LAB: public package
           cache-from: type=gha,scope=${{ matrix.platform }}
           cache-to: type=gha,scope=${{ matrix.platform }},mode=max
 
@@ -122,8 +127,9 @@ jobs:
 
       - uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3.4.0
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          registry: ghcr.io # LAB
+          username: ${{ github.actor }} # LAB
+          password: ${{ secrets.GITHUB_TOKEN }} # LAB
 
       - name: Resolve tags
         id: tags
