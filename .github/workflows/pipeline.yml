@@ -1,0 +1,30 @@
+name: Pipeline
+
+on:
+  pull_request:
+    branches: [develop, main, "release/**"]
+  push:
+    branches: [develop, main, "release/**"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pipeline-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  lint:
+    uses: marcelogorutuba/release-lab-workflows/.github/workflows/ruff.yml@v1.3.0
+
+  test:
+    uses: ./.github/workflows/ci.yml
+
+  publish:
+    needs: [lint, test]
+    uses: marcelogorutuba/release-lab-workflows/.github/workflows/publish-image.yml@v1.3.0
+    permissions:
+      contents: write
+      packages: write
+    with:
+      image: ghcr.io/marcelogorutuba/release-lab-processor
